@@ -2,6 +2,7 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const { VueLoaderPlugin } = require("vue-loader");
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = (env,localtest) => {
   const consumReactTsURL = localtest && localtest==='true' ? env['appConfig']['consumReactTsURL_forLocalTest'] :env['appConfig']['consumReactTsURL']; 
@@ -15,6 +16,10 @@ module.exports = (env,localtest) => {
   
     resolve: {
       extensions: [".tsx", ".ts", ".vue", ".jsx", ".js", ".json"],
+      alias: {
+        // 设置 '@' 为 src 目录的别名
+        '@': path.resolve(__dirname, '..' , 'src')
+      },
     },
   
     devServer: {
@@ -61,7 +66,7 @@ module.exports = (env,localtest) => {
         filename: "remoteVueTsEntry.js",
         remotes: {
           'remoteVueTs':`remoteVueTs@${consumVueTsURL}/remoteVueTsEntry.js`,
-          'remoteReactTs': `remoteReactTs@${consumReactTsURL}/remoteReactTsEntry.js`,
+          'remoteReactTs': `remoteReactTs@${consumReactTsURL}/remoteReactTsEntry.js`
         },
         exposes: {},
         shared: require("../package.json").dependencies,
